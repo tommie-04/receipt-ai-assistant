@@ -1,1 +1,1 @@
-# receipt-ai-assistant
+# Receipt AI Assistant
