@@ -66,10 +66,37 @@ CATEGORY_ICONS = {
 def get_icon(category):
     return CATEGORY_ICONS.get(category.lower(), "📦") if category else "📦"
 
+
+ # Initialize session state for username if not already set
+if "username" not in st.session_state:
+    st.session_state.username = None
+
+# If no username set yet, show login form
+if st.session_state.username is None:
+    st.title("🧾 AI Receipt Assistant")
+    st.write("Enter a username to get started. No password needed for now.")
+
+    username_input = st.text_input("Username")
+
+    if st.button("Continue"):
+        if username_input.strip() == "":
+            st.error("Please enter a username.")
+        else:
+            st.session_state.username = username_input.strip()
+            st.rerun()
+
+    st.stop()  # Stop execution here until username is set   
+
+
 # Header
 st.title("🧾 AI Receipt Assistant")
-st.write("Upload a receipt, bank statement, or handwritten note — AI will extract every transaction automatically.")
+st.write(f"Welcome, **{st.session_state.username}**! Upload a receipt, bank statement, or handwritten note.")
 
+if st.button("Log out"):
+    st.session_state.username = None
+    st.rerun()
+
+    
 uploaded_file = st.file_uploader("Upload image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
