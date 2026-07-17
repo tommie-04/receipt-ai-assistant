@@ -1,3 +1,4 @@
+from database import init_db, save_transaction, get_user_transactions
 import streamlit as st
 from google import genai
 from google.genai import types
@@ -15,6 +16,8 @@ st.set_page_config(
     page_icon="🧾",
     layout="centered"
 )
+
+init_db()
 
 # Custom styling
 st.markdown("""
@@ -96,7 +99,7 @@ if st.button("Log out"):
     st.session_state.username = None
     st.rerun()
 
-    
+
 uploaded_file = st.file_uploader("Upload image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
@@ -174,6 +177,16 @@ if uploaded_file is not None:
                 category = transaction.get("category", "other")
                 icon = get_icon(category)
                 items = transaction.get("items", [])
+
+                # Save this transaction to the database
+                save_transaction(
+                    username=st.session_state.username,
+                    merchant=merchant,
+                    total=total,
+                    date=date,
+                    category=category,
+                    items=items
+                )
 
                 card_html = f"""
                 <div class="transaction-card">
